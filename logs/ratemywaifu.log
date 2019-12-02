@@ -1,0 +1,62 @@
+2019-12-01 21:09:05,069 INFO: RateMyWaifu startup [in /Users/shuhari/a/TODO/classes/cpsc471/ratemywaifu/app/__init__.py:47]
+2019-12-01 21:09:26,817 INFO: RateMyWaifu startup [in /Users/shuhari/a/TODO/classes/cpsc471/ratemywaifu/app/__init__.py:47]
+2019-12-01 21:09:37,487 ERROR: Exception on /login [POST] [in /Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1246, in _execute_context
+    cursor, statement, parameters, context
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 581, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: user
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/flask/app.py", line 2446, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/flask/app.py", line 1951, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/flask/app.py", line 1820, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/flask/app.py", line 1949, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/flask/app.py", line 1935, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/shuhari/a/TODO/classes/cpsc471/ratemywaifu/app/routes.py", line 62, in login
+    user = User.query.filter_by(username=form.username.data).first()
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/orm/query.py", line 3265, in first
+    ret = list(self[0:1])
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/orm/query.py", line 3043, in __getitem__
+    return list(res)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/orm/query.py", line 3367, in __iter__
+    return self._execute_and_instances(context)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/orm/query.py", line 3392, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 982, in execute
+    return meth(self, multiparams, params)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/sql/elements.py", line 287, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1101, in _execute_clauseelement
+    distilled_params,
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1250, in _execute_context
+    e, statement, parameters, cursor, context
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1476, in _handle_dbapi_exception
+    util.raise_from_cause(sqlalchemy_exception, exc_info)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/util/compat.py", line 398, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb, cause=cause)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/util/compat.py", line 152, in reraise
+    raise value.with_traceback(tb)
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1246, in _execute_context
+    cursor, statement, parameters, context
+  File "/Users/shuhari/.local/share/virtualenvs/ratemywaifu-E_Sij8of/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 581, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: user
+[SQL: SELECT user.id AS user_id, user.username AS user_username, user.email AS user_email, user.password_hash AS user_password_hash, user.about_me AS user_about_me, user.last_seen AS user_last_seen 
+FROM user 
+WHERE user.username = ?
+ LIMIT ? OFFSET ?]
+[parameters: ('a', 1, 0)]
+(Background on this error at: http://sqlalche.me/e/e3q8)
+2019-12-01 21:10:37,117 INFO: RateMyWaifu startup [in /Users/shuhari/a/TODO/classes/cpsc471/ratemywaifu/app/__init__.py:47]
+2019-12-01 21:11:04,855 INFO: RateMyWaifu startup [in /Users/shuhari/a/TODO/classes/cpsc471/ratemywaifu/app/__init__.py:47]
