@@ -60,3 +60,5 @@ WHERE user.username = ?
 (Background on this error at: http://sqlalche.me/e/e3q8)
 2019-12-01 21:10:37,117 INFO: RateMyWaifu startup [in /Users/shuhari/a/TODO/classes/cpsc471/ratemywaifu/app/__init__.py:47]
 2019-12-01 21:11:04,855 INFO: RateMyWaifu startup [in /Users/shuhari/a/TODO/classes/cpsc471/ratemywaifu/app/__init__.py:47]
+2019-12-01 21:19:27,881 INFO: RateMyWaifu startup [in /Users/shuhari/a/TODO/classes/cpsc471/ratemywaifu/app/__init__.py:47]
+2019-12-01 21:21:14,317 INFO: RateMyWaifu startup [in /Users/shuhari/a/TODO/classes/cpsc471/ratemywaifu/app/__init__.py:47]
