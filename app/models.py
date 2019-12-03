@@ -89,3 +89,27 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+
+class Character(db.Model):
+    name = db.Column(db.String(140), primary_key=True)
+    description = db.Column(db.String(140))
+    image = db.Column(db.String(140))
+    anime_name = db.Column(db.String(140), db.ForeignKey('anime.name'))
+
+    def __repr__(self):
+        return '<Character {}>'.format(self.name)
+
+
+class Anime(db.Model):
+    name = db.Column(db.String(140), primary_key=True)
+    image = db.Column(db.String(140))
+    description = db.Column(db.String(140))
+    season = db.Column(db.String(140))
+    year = db.Column(db.String(140))
+    num_episodes = db.Column(db.String(140))
+    esrb = db.Column(db.String(140))
+    posts = db.relationship('Character', backref='in_anime', lazy='dynamic')
+
+    def __repr__(self):
+        return '<Anime {}>'.format(self.name)
