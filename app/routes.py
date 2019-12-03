@@ -1,11 +1,11 @@
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, send_from_directory
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, \
     ResetPasswordRequestForm, ResetPasswordForm
-from app.models import User, Post, Character, Anime
+from app.models import User, Post, Waifu, Anime
 from app.email import send_password_reset_email
 
 
@@ -187,7 +187,7 @@ def unfollow(username):
     return redirect(url_for('user', username=username))
 
 
-@app.route('/characters/<name>')
-def characters(name):
-    character = Character.query.filter_by(name=name).first_or_404()
-    return render_template('character.html', character=character)
+@app.route('/waifu/<name>')
+def waifu(name):
+    waifu = Waifu.query.filter_by(name=name).first_or_404()
+    return render_template('waifu.html', waifu=waifu)

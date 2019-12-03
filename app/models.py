@@ -91,14 +91,14 @@ class Post(db.Model):
         return '<Post {}>'.format(self.body)
 
 
-class Character(db.Model):
+class Waifu(db.Model):
     name = db.Column(db.String(140), primary_key=True)
     description = db.Column(db.String(140))
     image = db.Column(db.String(140))
     anime_name = db.Column(db.String(140), db.ForeignKey('anime.name'))
 
     def __repr__(self):
-        return '<Character {}>'.format(self.name)
+        return '<Waifu {}>'.format(self.name)
 
 
 class Anime(db.Model):
@@ -109,7 +109,7 @@ class Anime(db.Model):
     year = db.Column(db.String(140))
     num_episodes = db.Column(db.String(140))
     esrb = db.Column(db.String(140))
-    posts = db.relationship('Character', backref='in_anime', lazy='dynamic')
+    posts = db.relationship('Waifu', backref='in_anime', lazy='dynamic')
 
     def __repr__(self):
         return '<Anime {}>'.format(self.name)
