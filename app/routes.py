@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, \
-    ResetPasswordRequestForm, ResetPasswordForm
+    ResetPasswordRequestForm, ResetPasswordForm, UploadWaifuForm, UploadAnimeForm
 from app.models import User, Post, Waifu, Anime
 from app.email import send_password_reset_email
 
@@ -186,8 +186,40 @@ def unfollow(username):
     flash('You are not following {}.'.format(username))
     return redirect(url_for('user', username=username))
 
+#-------------------------------------------------------------------------------
 
-@app.route('/waifu/<name>')
-def waifu(name):
-    waifu = Waifu.query.filter_by(name=name).first_or_404()
+@app.route('/waifus')
+def browse_waifus():
+    return render_template('browse_waifus.html')
+
+@app.route('/waifus/<url>')
+def waifus(url):
+    waifu = Waifu.query.filter_by(url=url).first_or_404()
     return render_template('waifu.html', waifu=waifu)
+
+@app.route('/anime')
+def browse_anime():
+    return render_template('browse_anime.html')
+
+@app.route('/anime/<name>')
+def anime(name):
+    anime = Anime.query.filter_by(name=name).first_or_404()
+    return render_template('anime.html', anime=anime)
+
+@app.route('/upload/waifu', methods=['GET', 'POST'])
+def upload_waifu():
+    if current_user.is_anonymous:
+        return redirect(url_for('login'))
+    form = UploadWaifuForm()
+    if form.validate_on_submit():
+        waifu = Waifu(name=form.name.data, description=form.description.data, \
+            image=form.image.data, url=form.url.data, anime_name=form.anime_name.data)
+        db.session.add(waifu)
+        db.session.commit()
+        flash('Congratulations, you make a Waifu!')
+        return redirect(url_for('browse_waifus'))
+    return render_template('upload_waifu.html', title='Upload Waifu', form=form)
+
+@app.route('/upload/anime')
+def upload_anime():
+    return render_template('upload_anime.html')

@@ -63,3 +63,28 @@ class EditProfileForm(FlaskForm):
 class PostForm(FlaskForm):
     post = TextAreaField('Say something', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
+#-------------------------------------------------------------------------------
+
+
+class UploadWaifuForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+    image = StringField('Image', validators=[DataRequired()])
+    url = StringField('URL', validators=[DataRequired()])
+    anime_name = StringField('Anime Name', validators=[DataRequired()])
+    submit = SubmitField('Register')
+
+
+class UploadAnimeForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    season = StringField('Season', validators=[DataRequired()])
+    year = StringField('Year', validators=[DataRequired()])
+    num_episodes = StringField('Number of Episodes', validators=[DataRequired()])
+    esrb = StringField('ESRB Rating', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+    image = StringField('Image', validators=[DataRequired()])
+    url = StringField('URL', validators=[DataRequired()])
+    studio_name = StringField('Studio Name', validators=[DataRequired()])
+    submit = SubmitField('Register')

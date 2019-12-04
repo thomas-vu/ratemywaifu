@@ -92,24 +92,28 @@ class Post(db.Model):
 
 
 class Waifu(db.Model):
-    name = db.Column(db.String(140), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(140))
     description = db.Column(db.String(140))
     image = db.Column(db.String(140))
-    anime_name = db.Column(db.String(140), db.ForeignKey('anime.name'))
+    url = db.Column(db.String(140))
+    anime_name = db.Column(db.String(140), db.ForeignKey('anime.id'))
 
     def __repr__(self):
         return '<Waifu {}>'.format(self.name)
 
 
 class Anime(db.Model):
-    name = db.Column(db.String(140), primary_key=True)
-    image = db.Column(db.String(140))
-    description = db.Column(db.String(140))
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(140))
     season = db.Column(db.String(140))
     year = db.Column(db.String(140))
     num_episodes = db.Column(db.String(140))
     esrb = db.Column(db.String(140))
-    posts = db.relationship('Waifu', backref='in_anime', lazy='dynamic')
+    description = db.Column(db.String(140))
+    image = db.Column(db.String(140))
+    url = db.Column(db.String(140))
+    waifu = db.relationship('Waifu', backref='has_waifu', lazy='dynamic')
 
     def __repr__(self):
         return '<Anime {}>'.format(self.name)

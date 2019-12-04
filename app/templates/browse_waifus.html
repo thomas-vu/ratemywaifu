@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Browse Waifus</h1>
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Anime</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="/waifus/asuna-yuuki">Asuna Yuuki</a></td>
+          <td><a href="/anime/sword-art-online">Sword Art Online</a></td>
+        </tr>
+        <tr>
+          <td><a href="/waifus/mikasa-ackerman">Mikasa Ackerman</a></td>
+          <td>Attack on Titan</td>
+        </tr>
+        <tr>
+          <td>Sakura</td>
+          <td>Naruto</td>
+        </tr>
+      </tbody>
+    </table>
+
+{% endblock %}
