@@ -196,7 +196,7 @@ def browse_waifus():
 @app.route('/waifus/<url>')
 def waifus(url):
     waifu = Waifu.query.filter_by(url=url).first_or_404()
-    return render_template('waifu.html', waifu=waifu)
+    return render_template('waifu.html', waifu=waifu, Anime=Anime)
 
 @app.route('/anime')
 def browse_anime():

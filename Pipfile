@@ -14,7 +14,7 @@ flask-migrate = "*"
 flask-login = "*"
 flask-mail = "*"
 pyjwt = "*"
-flask-bootstrap = "*"
+flask-bootstrap4 = "*"
 
 [requires]
 python_version = "3.7"

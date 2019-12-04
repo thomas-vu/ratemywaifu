@@ -2,8 +2,19 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>name = {{ waifu.name }}</h1>
-    <h1>description = {{ waifu.description }}</h1>
-    <h1>anime_name = {{ waifu.anime_name }}</h1>
-	<img src='/static/{{ waifu.image }}' alt='Cover Image'>
+  <div class="row">
+    <div class="col-sm-3">
+      <img src='/static/{{ waifu.image }}' alt='Cover Image' style="width:100%">
+    </div>
+
+    <div class="col-sm-9">
+      <div class="jumbotron">
+        <h2 class="display-4">{{ waifu.name }}</h2>
+        <p class="lead">Appears in: <a href="/anime/{{ Anime.query.filter_by(name=waifu.anime_name).first_or_404().url }}">{{ waifu.anime_name }}</a></p>
+        <hr class="my-4">
+        <p>{{ waifu.description }}</p>
+        <a class="btn btn-primary btn-lg" href="#" role="button">Rate This Waifu</a>
+      </div>
+    </div>
+  </div>
 {% endblock %}
