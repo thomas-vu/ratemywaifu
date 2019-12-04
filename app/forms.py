@@ -74,7 +74,7 @@ class UploadWaifuForm(FlaskForm):
     image = StringField('Image', validators=[DataRequired()])
     url = StringField('URL', validators=[DataRequired()])
     anime_name = StringField('Anime Name', validators=[DataRequired()])
-    submit = SubmitField('Register')
+    submit = SubmitField('Upload')
 
 
 class UploadAnimeForm(FlaskForm):
@@ -87,4 +87,4 @@ class UploadAnimeForm(FlaskForm):
     image = StringField('Image', validators=[DataRequired()])
     url = StringField('URL', validators=[DataRequired()])
     studio_name = StringField('Studio Name', validators=[DataRequired()])
-    submit = SubmitField('Register')
+    submit = SubmitField('Upload')

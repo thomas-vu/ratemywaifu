@@ -190,7 +190,8 @@ def unfollow(username):
 
 @app.route('/waifus')
 def browse_waifus():
-    return render_template('browse_waifus.html')
+    waifus = Waifu.query.all()
+    return render_template('browse_waifus.html', waifus=waifus, Anime=Anime)
 
 @app.route('/waifus/<url>')
 def waifus(url):
@@ -199,27 +200,37 @@ def waifus(url):
 
 @app.route('/anime')
 def browse_anime():
-    return render_template('browse_anime.html')
+    animes = Anime.query.all()
+    return render_template('browse_anime.html', animes=animes)
 
-@app.route('/anime/<name>')
-def anime(name):
-    anime = Anime.query.filter_by(name=name).first_or_404()
+@app.route('/anime/<url>')
+def anime(url):
+    anime = Anime.query.filter_by(url=url).first_or_404()
     return render_template('anime.html', anime=anime)
 
-@app.route('/upload/waifu', methods=['GET', 'POST'])
-def upload_waifu():
+@app.route('/upload/<category>', methods=['GET', 'POST'])
+def upload(category):
     if current_user.is_anonymous:
         return redirect(url_for('login'))
-    form = UploadWaifuForm()
-    if form.validate_on_submit():
-        waifu = Waifu(name=form.name.data, description=form.description.data, \
-            image=form.image.data, url=form.url.data, anime_name=form.anime_name.data)
-        db.session.add(waifu)
-        db.session.commit()
-        flash('Congratulations, you make a Waifu!')
-        return redirect(url_for('browse_waifus'))
-    return render_template('upload_waifu.html', title='Upload Waifu', form=form)
 
-@app.route('/upload/anime')
-def upload_anime():
-    return render_template('upload_anime.html')
+    if category == 'waifu':
+        form = UploadWaifuForm()
+        if form.validate_on_submit():
+            waifu = Waifu(name=form.name.data, description=form.description.data, \
+                image=form.image.data, url=form.url.data, anime_name=form.anime_name.data)
+            db.session.add(waifu)
+            db.session.commit()
+            flash('Congratulations, you make a Waifu!')
+            return redirect(url_for('browse_waifus'))
+    elif category == 'anime':
+        form = UploadAnimeForm()
+        if form.validate_on_submit():
+            anime = Anime(name=form.name.data, season=form.season.data, year=form.year.data, \
+                num_episodes=form.num_episodes.data, esrb=form.esrb.data, description=form.description.data, \
+                image=form.image.data, url=form.url.data)
+            db.session.add(anime)
+            db.session.commit()
+            flash('Congratulations, you make a Anime!')
+            return redirect(url_for('browse_anime'))
+
+    return render_template('upload.html', title=f'Upload {category.capitalize()}', form=form)

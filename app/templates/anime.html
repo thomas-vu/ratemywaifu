@@ -2,5 +2,12 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>Sword Art Online</h1>
+    <h1>name = {{ anime.name }}</h1>
+    <h1>season = {{ anime.season }}</h1>
+    <h1>year = {{ anime.year }}</h1>
+    <h1>num_episodes = {{ anime.num_episodes }}</h1>
+    <h1>esrb = {{ anime.esrb }}</h1>
+    <h1>description = {{ anime.description }}</h1>
+	<img src='/static/{{ anime.image }}' alt='Cover Image'>
+    <h1>url = {{ anime.url }}</h1>
 {% endblock %}

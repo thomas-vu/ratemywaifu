@@ -20,8 +20,8 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('browse_waifus') }}">Browse Waifus</a></li>
                     <li><a href="{{ url_for('browse_anime') }}">Browse Anime</a></li>
-                    <li><a href="{{ url_for('upload_waifu') }}">Upload Waifu</a></li>
-                    <li><a href="{{ url_for('upload_anime') }}">Upload Anime</a></li>
+                    <li><a href="{{ url_for('upload', category='waifu') }}">Upload Waifu</a></li>
+                    <li><a href="{{ url_for('upload', category='anime') }}">Upload Anime</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
