@@ -2,14 +2,19 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>name = {{ anime.name }}</h1>
-    <h1>season = {{ anime.season }}</h1>
-    <h1>year = {{ anime.year }}</h1>
-    <h1>num_episodes = {{ anime.num_episodes }}</h1>
-    <h1>esrb = {{ anime.esrb }}</h1>
-    <h1>description = {{ anime.description }}</h1>
-	<img src='/static/{{ anime.image }}' alt='Cover Image'>
-    <h1>url = {{ anime.url }}</h1>
+  <div class="row">
+    <div class="col-sm-3">
+      <img src='/static/{{ anime.image }}' alt='Cover Image' style="width:100%">
+    </div>
+
+    <div class="col-sm-9">
+      <div class="jumbotron">
+        <h2 class="display-4">{{ anime.name }}</h2>
+        <p class="lead">Premiered: {{ anime.season + ' ' + anime.year}}</p>
+        <p class="lead">Number of Episodes: {{ anime.num_episodes }}</p>
+        <hr class="my-4">
+        <p>{{ anime.description }}</p>
+      </div>
+    </div>
+  </div>
 {% endblock %}
-
-
