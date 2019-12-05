@@ -4,8 +4,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, \
-    ResetPasswordRequestForm, ResetPasswordForm, UploadWaifuForm, UploadAnimeForm
-from app.models import User, Post, Waifu, Anime
+    ResetPasswordRequestForm, ResetPasswordForm, UploadWaifuForm, UploadAnimeForm, RateWaifuForm
+from app.models import User, Post, Waifu, Anime, Rating
 from app.email import send_password_reset_email
 
 
@@ -27,6 +27,7 @@ def index():
         db.session.commit()
         flash('Your post is now live!')
         return redirect(url_for('index'))
+
     page = request.args.get('page', 1, type=int)
     posts = current_user.followed_posts().paginate(
         page, app.config['POSTS_PER_PAGE'], False)
@@ -34,9 +35,12 @@ def index():
         if posts.has_next else None
     prev_url = url_for('index', page=posts.prev_num) \
         if posts.has_prev else None
+
+    ratings = Rating.query.all()
+
     return render_template('index.html', title='Home', form=form,
                            posts=posts.items, next_url=next_url,
-                           prev_url=prev_url)
+                           prev_url=prev_url, Waifu=Waifu, ratings=ratings)
 
 
 @app.route('/explore')
@@ -128,14 +132,23 @@ def reset_password(token):
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
+
     posts = user.posts.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('user', username=user.username, page=posts.next_num) \
         if posts.has_next else None
     prev_url = url_for('user', username=user.username, page=posts.prev_num) \
         if posts.has_prev else None
+
+    ratings = user.ratings.order_by(Rating.timestamp.desc()).paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('user', username=user.username, page=ratings.next_num) \
+        if ratings.has_next else None
+    prev_url = url_for('user', username=user.username, page=ratings.prev_num) \
+        if ratings.has_prev else None
+
     return render_template('user.html', user=user, posts=posts.items,
-                           next_url=next_url, prev_url=prev_url)
+                           next_url=next_url, prev_url=prev_url, Waifu=Waifu, ratings=ratings.items)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -196,7 +209,8 @@ def browse_waifus():
 @app.route('/waifus/<url>')
 def waifus(url):
     waifu = Waifu.query.filter_by(url=url).first_or_404()
-    return render_template('waifu.html', waifu=waifu, Anime=Anime)
+    ratings = Rating.query.filter_by(waifu_id=waifu.id)
+    return render_template('waifu.html', waifu=waifu, Waifu=Waifu, Anime=Anime, ratings=ratings)
 
 @app.route('/anime')
 def browse_anime():
@@ -234,3 +248,20 @@ def upload(category):
             return redirect(url_for('browse_anime'))
 
     return render_template('upload.html', title=f'Upload {category.capitalize()}', form=form)
+
+@app.route('/rate/<url>', methods=['GET', 'POST'])
+def rate(url):
+    if current_user.is_anonymous:
+        return redirect(url_for('login'))
+
+    waifu = Waifu.query.filter_by(url=url).first_or_404()
+    form = RateWaifuForm()
+    if form.validate_on_submit():
+        rating = Rating(appearance=form.appearance.data, personality=form.personality.data, \
+            strength=form.strength.data, intelligence=form.intelligence.data, wouldyou=form.wouldyou.data, \
+            body=form.body.data, author=current_user, rated=waifu)
+        db.session.add(rating)
+        db.session.commit()
+        flash('Congratulations, you rate a Waifu!')
+        return redirect(url_for('waifus', url=url))
+    return render_template('rate.html', form=form, waifu=waifu)

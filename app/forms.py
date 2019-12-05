@@ -88,3 +88,13 @@ class UploadAnimeForm(FlaskForm):
     url = StringField('URL', validators=[DataRequired()])
     studio_name = StringField('Studio Name', validators=[DataRequired()])
     submit = SubmitField('Upload')
+
+
+class RateWaifuForm(FlaskForm):
+    appearance = StringField("Rate this Waifu's appearance (1-10)", validators=[DataRequired()])
+    personality = StringField("Rate this Waifu's personality (1-10)", validators=[DataRequired()])
+    strength = StringField("Rate this Waifu's combat ability (1-10)", validators=[DataRequired()])
+    intelligence = StringField("Rate this Waifu's intelligence (1-10)", validators=[DataRequired()])
+    wouldyou = StringField("Would you?", validators=[DataRequired()])
+    body = StringField("Tell us how you feel about this Waifu.", validators=[DataRequired()])
+    submit = SubmitField('Submit')

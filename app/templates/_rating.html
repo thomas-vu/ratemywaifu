@@ -1,17 +1,28 @@
     <table class="table table-hover">
         <tr>
             <td width="70px">
-                <a href="{{ url_for('user', username=post.author.username) }}">
-                    <img src="{{ post.author.avatar(70) }}" />
+                <a href="{{ url_for('user', username=rating.author.username) }}">
+                    <img src="{{ rating.author.avatar(70) }}" />
                 </a>
             </td>
             <td>
-                <a href="{{ url_for('user', username=post.author.username) }}">
-                    {{ post.author.username }}
+                <a href="{{ url_for('user', username=rating.author.username) }}">
+                    {{ rating.author.username }}
                 </a>
-                says:
+                rated <a href="{{ url_for('waifus', url=Waifu.query.filter_by(id=rating.waifu_id).first_or_404().url) }}">{{ Waifu.query.filter_by(id=rating.waifu_id).first_or_404().name }}:</a>
                 <br>
-                {{ post.body }}
+                <strong>Appearance: {{ rating.appearance }}</strong>
+                <br>
+                <strong>Personality: {{ rating.personality }}</strong>
+                <br>
+                <strong>Combat Ability: {{ rating.strength }}</strong>
+                <br>
+                <strong>Intelligence: {{ rating.intelligence }}</strong>
+                <br>
+                <strong>Would they: {{ rating.wouldyou }}</strong>
+                <br>
+                <br>
+                {{ rating.body }}
             </td>
         </tr>
     </table>

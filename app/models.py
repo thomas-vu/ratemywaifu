@@ -20,6 +20,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    ratings = db.relationship('Rating', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     followed = db.relationship(
@@ -97,6 +98,7 @@ class Waifu(db.Model):
     description = db.Column(db.String(140))
     image = db.Column(db.String(140))
     url = db.Column(db.String(140))
+    rating = db.relationship('Rating', backref='rated', lazy='dynamic')
     anime_name = db.Column(db.String(140), db.ForeignKey('anime.id'))
 
     def __repr__(self):
@@ -117,3 +119,19 @@ class Anime(db.Model):
 
     def __repr__(self):
         return '<Anime {}>'.format(self.name)
+
+
+class Rating(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    appearance = db.Column(db.String(140))
+    personality = db.Column(db.String(140))
+    strength = db.Column(db.String(140))
+    intelligence = db.Column(db.String(140))
+    wouldyou = db.Column(db.String(140))
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    waifu_id = db.Column(db.Integer, db.ForeignKey('waifu.id'))
+
+    def __repr__(self):
+        return '<Rating {}>'.format(self.body)

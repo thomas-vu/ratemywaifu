@@ -13,8 +13,13 @@
         <p class="lead">Appears in: <a href="/anime/{{ Anime.query.filter_by(name=waifu.anime_name).first_or_404().url }}">{{ waifu.anime_name }}</a></p>
         <hr class="my-4">
         <p>{{ waifu.description }}</p>
-        <a class="btn btn-primary btn-lg" href="#" role="button">Rate This Waifu</a>
+        <a class="btn btn-primary btn-lg" href="/rate/{{ waifu.url }}" role="button">Rate This Waifu</a>
       </div>
     </div>
   </div>
+
+  {% for rating in ratings %}
+      {% include '_rating.html' %}
+  {% endfor %}
+
 {% endblock %}
