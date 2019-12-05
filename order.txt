@@ -1,0 +1,2 @@
+name$REALNAME$IMAGE$ANIME_NAME$TAGS$DESCRIPTION
+name, AnimeName, image, season, year, numEpisodes, esrb, studioName, genres, description
