@@ -101,6 +101,7 @@ class Waifu(db.Model):
     url = db.Column(db.String(140))
     rating = db.relationship('Rating', backref='rated', lazy='dynamic')
     anime_name = db.Column(db.String(140), db.ForeignKey('anime.id'))
+    pending_anime_name = db.Column(db.String(140), db.ForeignKey('pending_anime.id'))
 
     def __repr__(self):
         return '<Waifu {}>'.format(self.name)
@@ -112,7 +113,9 @@ class PendingWaifu(db.Model):
     description = db.Column(db.String(140))
     image = db.Column(db.String(140))
     url = db.Column(db.String(140))
-    anime_name = db.Column(db.String(140))
+    rating = db.relationship('Rating', backref='rated2', lazy='dynamic')
+    anime_name = db.Column(db.String(140), db.ForeignKey('anime.id'))
+    pending_anime_name = db.Column(db.String(140), db.ForeignKey('pending_anime.id'))
 
     def __repr__(self):
         return '<Pending Waifu {}>'.format(self.name)
@@ -129,6 +132,7 @@ class Anime(db.Model):
     image = db.Column(db.String(140))
     url = db.Column(db.String(140))
     waifu = db.relationship('Waifu', backref='has_waifu', lazy='dynamic')
+    pending_waifu = db.relationship('PendingWaifu', backref='has_waifu', lazy='dynamic')
 
     def __repr__(self):
         return '<Anime {}>'.format(self.name)
@@ -144,6 +148,8 @@ class PendingAnime(db.Model):
     description = db.Column(db.String(140))
     image = db.Column(db.String(140))
     url = db.Column(db.String(140))
+    waifu = db.relationship('Waifu', backref='has_waifu2', lazy='dynamic')
+    pending_waifu = db.relationship('PendingWaifu', backref='has_waifu2', lazy='dynamic')
 
     def __repr__(self):
         return '<Pending Anime {}>'.format(self.name)
@@ -160,6 +166,7 @@ class Rating(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     waifu_id = db.Column(db.Integer, db.ForeignKey('waifu.id'))
+    pending_waifu_id = db.Column(db.Integer, db.ForeignKey('pending_waifu.id'))
 
     def __repr__(self):
         return '<Rating {}>'.format(self.body)

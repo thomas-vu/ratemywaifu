@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+
+    <h1>Admin Page</h1>
+
+    <h2>Pending Waifu Submissions</h2>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Image</th>
+          <th scope="col">URL</th>
+          <th scope="col">Anime</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pending_waifu in pending_waifus %}
+            <tr>
+              <td>{{ pending_waifu.name }}</td>
+              <td>{{ pending_waifu.description }}</td>
+              <td>{{ pending_waifu.image }}</td>
+              <td>{{ pending_waifu.url }}</td>
+              <td>{{ pending_waifu.anime_name }}</td>
+              <td><button type="button" class="btn btn-success"><a href="/admin/accept/waifu/{{ pending_waifu.url }}" style="color: white">Accept</a></button></td>
+              <td><button type="button" class="btn btn-danger"><a href="/admin/reject/waifu/{{ pending_waifu.url }}" style="color: white">Reject</a></button></td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2>Pending Anime Submissions</h2>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Season</th>
+          <th scope="col">Year</th>
+          <th scope="col">Number of Episodes</th>
+          <th scope="col">ESRB</th>
+          <th scope="col">Description</th>
+          <th scope="col">Image</th>
+          <th scope="col">URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pending_anime in pending_animes %}
+            <tr>
+              <td>{{ pending_anime.name }}</td>
+              <td>{{ pending_anime.season }}</td>
+              <td>{{ pending_anime.year }}</td>
+              <td>{{ pending_anime.num_episodes }}</td>
+              <td>{{ pending_anime.esrb }}</td>
+              <td>{{ pending_anime.description }}</td>
+              <td>{{ pending_anime.image }}</td>
+              <td>{{ pending_anime.url }}</td>
+              <td><button type="button" class="btn btn-success"><a href="/admin/accept/anime/{{ pending_anime.url }}" style="color: white">Accept</a></button></td>
+              <td><button type="button" class="btn btn-danger"><a href="/admin/reject/anime/{{ pending_anime.url }}" style="color: white">Reject</a></button></td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+{% endblock %}

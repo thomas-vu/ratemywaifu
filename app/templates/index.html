@@ -7,7 +7,11 @@
       <img src="/static/ratemywaifu-mascot.jpg" class="img-fluid" alt="Sample image">
     </div>
     <div class="card-body text-center mb-3">
-      <h3 class="card-title h3 my-4"><strong>Welcome to RateMyWaifu, {{ current_user.username }}!</strong></h3>
+      {% if current_user.is_authenticated %}
+        <h3 class="card-title h3 my-4"><strong>Welcome to RateMyWaifu, {{ current_user.username }}!</strong></h3>
+      {% else %}
+        <h3 class="card-title h3 my-4"><strong>Welcome to RateMyWaifu!</strong></h3>
+      {% endif %}
       <p class="card-text py-2">RateMyWaifu is the premier destination to let others know how you really feel about their Waifu.</p>
     </div>
   </div>

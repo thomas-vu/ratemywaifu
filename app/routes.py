@@ -5,7 +5,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, \
     ResetPasswordRequestForm, ResetPasswordForm, UploadWaifuForm, UploadAnimeForm, RateWaifuForm
-from app.models import User, Post, Waifu, Anime, Rating
+from app.models import User, Post, Waifu, PendingWaifu, Anime, PendingAnime, Rating
 from app.email import send_password_reset_email
 
 
@@ -18,29 +18,30 @@ def before_request():
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
-@login_required
 def index():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Your post is now live!')
-        return redirect(url_for('index'))
+    #form = PostForm()
+    #if form.validate_on_submit():
+    #    post = Post(body=form.post.data, author=current_user)
+    #    db.session.add(post)
+    #    db.session.commit()
+    #    flash('Your post is now live!')
+    #    return redirect(url_for('index'))
 
-    page = request.args.get('page', 1, type=int)
-    posts = current_user.followed_posts().paginate(
-        page, app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('index', page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('index', page=posts.prev_num) \
-        if posts.has_prev else None
+    #page = request.args.get('page', 1, type=int)
+    #posts = current_user.followed_posts().paginate(
+    #    page, app.config['POSTS_PER_PAGE'], False)
+    #next_url = url_for('index', page=posts.next_num) \
+    #    if posts.has_next else None
+    #prev_url = url_for('index', page=posts.prev_num) \
+    #    if posts.has_prev else None
 
     ratings = Rating.query.all()
 
-    return render_template('index.html', title='Home', form=form,
-                           posts=posts.items, next_url=next_url,
-                           prev_url=prev_url, Waifu=Waifu, ratings=ratings)
+    #return render_template('index.html', title='Home', form=form,
+    #                       posts=posts.items, next_url=next_url,
+    #                       prev_url=prev_url, Waifu=Waifu, ratings=ratings)
+
+    return render_template('index.html', title='Home', Waifu=Waifu, ratings=ratings)
 
 
 @app.route('/explore')
@@ -206,21 +207,25 @@ def browse_waifus():
     waifus = Waifu.query.all()
     return render_template('browse_waifus.html', waifus=waifus, Anime=Anime)
 
+
 @app.route('/waifus/<url>')
 def waifus(url):
     waifu = Waifu.query.filter_by(url=url).first_or_404()
     ratings = Rating.query.filter_by(waifu_id=waifu.id)
     return render_template('waifu.html', waifu=waifu, Waifu=Waifu, Anime=Anime, ratings=ratings)
 
+
 @app.route('/anime')
 def browse_anime():
     animes = Anime.query.all()
     return render_template('browse_anime.html', animes=animes)
 
+
 @app.route('/anime/<url>')
 def anime(url):
     anime = Anime.query.filter_by(url=url).first_or_404()
     return render_template('anime.html', anime=anime)
+
 
 @app.route('/upload/<category>', methods=['GET', 'POST'])
 def upload(category):
@@ -230,24 +235,25 @@ def upload(category):
     if category == 'waifu':
         form = UploadWaifuForm()
         if form.validate_on_submit():
-            waifu = Waifu(name=form.name.data, description=form.description.data, \
+            pending_waifu = PendingWaifu(name=form.name.data, description=form.description.data, \
                 image=form.image.data, url=form.url.data, anime_name=form.anime_name.data)
-            db.session.add(waifu)
+            db.session.add(pending_waifu)
             db.session.commit()
-            flash('Congratulations, you make a Waifu!')
+            flash('Congratulations, you make a Waifu! (Acceptance Pending)')
             return redirect(url_for('browse_waifus'))
     elif category == 'anime':
         form = UploadAnimeForm()
         if form.validate_on_submit():
-            anime = Anime(name=form.name.data, season=form.season.data, year=form.year.data, \
+            pending_anime = PendingAnime(name=form.name.data, season=form.season.data, year=form.year.data, \
                 num_episodes=form.num_episodes.data, esrb=form.esrb.data, description=form.description.data, \
                 image=form.image.data, url=form.url.data)
-            db.session.add(anime)
+            db.session.add(pending_anime)
             db.session.commit()
-            flash('Congratulations, you make a Anime!')
+            flash('Congratulations, you make a Anime! (Acceptance Pending)')
             return redirect(url_for('browse_anime'))
 
     return render_template('upload.html', title=f'Upload {category.capitalize()}', form=form)
+
 
 @app.route('/rate/<url>', methods=['GET', 'POST'])
 def rate(url):
@@ -265,3 +271,40 @@ def rate(url):
         flash('Congratulations, you rate a Waifu!')
         return redirect(url_for('waifus', url=url))
     return render_template('rate.html', form=form, waifu=waifu)
+
+
+@app.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin():
+    if current_user.is_authenticated and current_user.admin_flag:
+        pending_waifus = PendingWaifu.query.all()
+        pending_animes = PendingAnime.query.all()
+        return render_template('admin.html', pending_waifus=pending_waifus, pending_animes=pending_animes)
+    return redirect(url_for('index'))
+
+
+@app.route('/admin/<status>/<category>/<url>', methods=['GET', 'POST'])
+@login_required
+def admin_judgement(status, category, url):
+    if current_user.is_authenticated and current_user.admin_flag:
+        if status == 'accept':
+            if category == 'waifu':
+                pending = PendingWaifu.query.filter_by(url=url).first_or_404()
+                accepted = Waifu(name=pending.name, description=pending.description, \
+                    image=pending.image, url=pending.url, anime_name=pending.anime_name)
+            elif category == 'anime':
+                pending = PendingAnime.query.filter_by(url=url).first_or_404()
+                accepted = Anime(name=pending.name, season=pending.season, year=pending.year, \
+                    num_episodes=pending.num_episodes, esrb=pending.esrb, description=pending.description, \
+                    image=pending.image, url=pending.url)
+            db.session.add(accepted)
+            db.session.delete(pending)
+        elif status == 'reject':
+            if category == 'waifu':
+                rejected = PendingWaifu.query.filter_by(url=url).first_or_404()
+            elif category == 'anime':
+                rejected = PendingAnime.query.filter_by(url=url).first_or_404()
+            db.session.delete(rejected)
+        db.session.commit()
+        return redirect(url_for('admin'))
+    return redirect(url_for('index'))
