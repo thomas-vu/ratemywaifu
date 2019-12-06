@@ -6,16 +6,39 @@
     <div class="col-sm-3">
       <img src='/static/{{ anime.image }}' alt='Cover Image' style="width:100%">
     </div>
-
     <div class="col-sm-9">
       <div class="jumbotron">
         <h2 class="display-4">{{ anime.name }}</h2>
-        <p class="lead">Premiered: {{ anime.season + ' ' + anime.year}}</p>
+        <p class="lead">Studio: <a href="/animeRelease/{{anime.studio}}">{{ anime.studio }}</a></p>
+        <p class="lead">Premiered: <a href="/animeRelease/{{anime.season}}">{{ anime.season }}</a> <a href="/animeRelease/{{anime.year}}">{{ anime.year }}</a></p>
         <p class="lead">Number of Episodes: {{ anime.num_episodes }}</p>
-        <p class="lead">ESRB Rating: {{ anime.esrb }}</p>
+        <p class="lead">Rating: {{anime.esrb}}</p>
+        <div class="tags" style="vertical-align:sub">
+          Genres: 
+          {% for genre in genres %}
+            &emsp;<a href="/animeGenre/{{genre.genre}}">{{genre.genre}}</a>
+          {% endfor %}
+        </div>
         <hr class="my-4">
         <p>{{ anime.description }}</p>
       </div>
     </div>
   </div>
+  <h1>Waifus from this Anime</h1>
+  <table class="table table-hover table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Anime</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for waifu in waifus %}
+        <tr>
+          <td><a href="/waifus/{{ waifu.url }}">{{ waifu.name }}</a></td>
+          <td><a href="/anime/{{ anime.query.filter_by(name=waifu.anime_name).first_or_404().url }}">{{ waifu.anime_name }}</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}

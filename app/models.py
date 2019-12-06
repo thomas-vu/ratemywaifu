@@ -6,13 +6,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import app, db, login
 
-
 followers = db.Table(
     'followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
-
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -77,21 +75,17 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
-
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
     def __repr__(self):
         return '<Post {}>'.format(self.body)
-
 
 class Waifu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -101,10 +95,8 @@ class Waifu(db.Model):
     url = db.Column(db.String(140))
     rating = db.relationship('Rating', backref='rated', lazy='dynamic')
     anime_name = db.Column(db.String(140), db.ForeignKey('anime.id'))
-
     def __repr__(self):
         return '<Waifu {}>'.format(self.name)
-
 
 class PendingWaifu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -113,10 +105,8 @@ class PendingWaifu(db.Model):
     image = db.Column(db.String(140))
     url = db.Column(db.String(140))
     anime_name = db.Column(db.String(140))
-
     def __repr__(self):
         return '<Pending Waifu {}>'.format(self.name)
-
 
 class Anime(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -128,11 +118,10 @@ class Anime(db.Model):
     description = db.Column(db.String(140))
     image = db.Column(db.String(140))
     url = db.Column(db.String(140))
+    studio = db.Column(db.String(140))
     waifu = db.relationship('Waifu', backref='has_waifu', lazy='dynamic')
-
     def __repr__(self):
         return '<Anime {}>'.format(self.name)
-
 
 class PendingAnime(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -144,10 +133,9 @@ class PendingAnime(db.Model):
     description = db.Column(db.String(140))
     image = db.Column(db.String(140))
     url = db.Column(db.String(140))
-
+    studio = db.Column(db.String(140))
     def __repr__(self):
         return '<Pending Anime {}>'.format(self.name)
-
 
 class Rating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -160,6 +148,25 @@ class Rating(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     waifu_id = db.Column(db.Integer, db.ForeignKey('waifu.id'))
-
     def __repr__(self):
         return '<Rating {}>'.format(self.body)
+
+class Studio(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(140))
+    def __repr__(self):
+        return '<Studio {}>'.format(self.name)
+
+class AnimeGenres(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    anime_name = db.Column(db.String(140))
+    genre = db.Column(db.String(140))
+    def __repr__(self):
+        return '<AnimeGenres {}>'.format(self.name)
+
+class WaifuTags(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    waifu_name = db.Column(db.String(140))
+    tag = db.Column(db.String(140))
+    def __repr__(self):
+        return '<WaifuTags {}>'.format(self.name)

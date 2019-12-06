@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 2ead433c5fa4
+Revision ID: f927045ebc7d
 Revises: 
-Create Date: 2019-12-05 15:42:57.172221
+Create Date: 2019-12-05 23:57:08.458019
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2ead433c5fa4'
+revision = 'f927045ebc7d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,6 +28,13 @@ def upgrade():
     sa.Column('description', sa.String(length=140), nullable=True),
     sa.Column('image', sa.String(length=140), nullable=True),
     sa.Column('url', sa.String(length=140), nullable=True),
+    sa.Column('studio', sa.String(length=140), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('anime_genres',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('anime_name', sa.String(length=140), nullable=True),
+    sa.Column('genre', sa.String(length=140), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('pending_anime',
@@ -40,6 +47,7 @@ def upgrade():
     sa.Column('description', sa.String(length=140), nullable=True),
     sa.Column('image', sa.String(length=140), nullable=True),
     sa.Column('url', sa.String(length=140), nullable=True),
+    sa.Column('studio', sa.String(length=140), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('pending_waifu',
@@ -49,6 +57,11 @@ def upgrade():
     sa.Column('image', sa.String(length=140), nullable=True),
     sa.Column('url', sa.String(length=140), nullable=True),
     sa.Column('anime_name', sa.String(length=140), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('studio',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=140), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
@@ -63,6 +76,12 @@ def upgrade():
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
+    op.create_table('waifu_tags',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('waifu_name', sa.String(length=140), nullable=True),
+    sa.Column('tag', sa.String(length=140), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('followers',
     sa.Column('follower_id', sa.Integer(), nullable=True),
     sa.Column('followed_id', sa.Integer(), nullable=True),
@@ -115,10 +134,13 @@ def downgrade():
     op.drop_index(op.f('ix_post_timestamp'), table_name='post')
     op.drop_table('post')
     op.drop_table('followers')
+    op.drop_table('waifu_tags')
     op.drop_index(op.f('ix_user_username'), table_name='user')
     op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
+    op.drop_table('studio')
     op.drop_table('pending_waifu')
     op.drop_table('pending_anime')
+    op.drop_table('anime_genres')
     op.drop_table('anime')
     # ### end Alembic commands ###
