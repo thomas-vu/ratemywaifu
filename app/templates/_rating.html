@@ -9,17 +9,17 @@
                 <a href="{{ url_for('user', username=rating.author.username) }}">
                     {{ rating.author.username }}
                 </a>
-                rated <a href="{{ url_for('waifus', url=Waifu.query.filter_by(id=rating.waifu_id).first_or_404().url) }}">{{ Waifu.query.filter_by(id=rating.waifu_id).first_or_404().name }}</a>
+                rated <a href="{{ url_for('waifus', url=Waifu.query.filter_by(id=rating.waifu_id).first_or_404().url) }}">{{ Waifu.query.filter_by(id=rating.waifu_id).first_or_404().name }}</a> {{ moment(rating.timestamp).fromNow() }}:
                 <br>
-                <strong>Appearance: {{ rating.appearance }}</strong>
+                <strong>Appearance: </strong>{{ rating.appearance }}
                 <br>
-                <strong>Personality: {{ rating.personality }}</strong>
+                <strong>Personality: </strong>{{ rating.personality }}
                 <br>
-                <strong>Combat Ability: {{ rating.strength }}</strong>
+                <strong>Combat Ability: </strong>{{ rating.strength }}
                 <br>
-                <strong>Intelligence: {{ rating.intelligence }}</strong>
+                <strong>Intelligence: </strong>{{ rating.intelligence }}
                 <br>
-                <strong>Would you? {{ rating.wouldyou }}</strong>
+                <strong>Would you?: </strong>{{ rating.wouldyou }}
                 <br>
                 <br>
                 {{ rating.body }}

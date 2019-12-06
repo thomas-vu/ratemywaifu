@@ -260,6 +260,7 @@ def upload(category):
             flash('Congratulations, you make a Waifu! (Acceptance Pending)')
             return redirect(url_for('browse_waifus'))
     elif category == 'anime':
+        print('OMGGGG')
         form = UploadAnimeForm()
         if form.validate_on_submit():
             pending_anime = PendingAnime(name=form.name.data, season=form.season.data, year=form.year.data, \
@@ -267,6 +268,7 @@ def upload(category):
                 image=form.image.data, url=form.url.data)
             db.session.add(pending_anime)
             gens = form.genres.data
+            print('WTFFFFFFF')
             for gs in gens:
                 genres = AnimeGenres(anime_name=form.name.data, genre=gs)
                 db.session.add(genres)
@@ -333,4 +335,4 @@ def searchDB():
     searchTerm = request.form['searchTerm']
     animes = Anime.query.filter(or_(Anime.name.contains(searchTerm),Anime.description.contains(searchTerm))).all()
     waifus = Waifu.query.filter(or_(Waifu.name.contains(searchTerm),Waifu.description.contains(searchTerm))).all()
-    return render_template('browse_search.html', waifus=waifus, Anime=Anime, animes=animes)
+    return render_template('browse_search.html', Anime=Anime, waifus=waifus, animes=animes, show_waifus=True, show_animes=True)

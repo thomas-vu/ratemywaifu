@@ -98,15 +98,15 @@ class UploadWaifuForm(FlaskForm):
 
 class UploadAnimeForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    season = SelectField('Season', validators=[DataRequired()])
-    year = SelectField('Year', validators=[DataRequired()])
+    season = SelectField('Season', choices=seasons)
+    year = SelectField('Year', choices=years)
     num_episodes = StringField('Number of Episodes', validators=[DataRequired()])
-    esrb = SelectField('ESRB Rating', validators=[DataRequired()])
+    esrb = SelectField('ESRB Rating', choices=ratings)
     description = StringField('Description', validators=[DataRequired()])
     image = StringField('Image', validators=[DataRequired()])
     url = StringField('URL', validators=[DataRequired()])
     studio = StringField('Studio Name', validators=[DataRequired()])
-    genres = MultiCheckboxField('Genres', choices = allgenres, validators=[DataRequired()])
+    genres = MultiCheckboxField('Genres', choices=allgenres, validators=[DataRequired()])
     submit = SubmitField('Upload')
 
 class RateWaifuForm(FlaskForm):
@@ -114,6 +114,6 @@ class RateWaifuForm(FlaskForm):
     personality = StringField("Rate this Waifu's personality (1-10)", validators=[DataRequired()])
     strength = StringField("Rate this Waifu's combat ability (1-10)", validators=[DataRequired()])
     intelligence = StringField("Rate this Waifu's intelligence (1-10)", validators=[DataRequired()])
-    wouldyou = StringField("Would you?", validators=[DataRequired()])
-    body = StringField("Tell us how you really feel about this Waifu.", validators=[DataRequired()])
+    wouldyou = StringField('Would you?', validators=[DataRequired()])
+    body = TextAreaField('Tell us how you really feel about this Waifu.', validators=[Length(min=0, max=140)])
     submit = SubmitField('Submit')
