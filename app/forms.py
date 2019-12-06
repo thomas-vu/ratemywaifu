@@ -115,5 +115,5 @@ class RateWaifuForm(FlaskForm):
     strength = StringField("Rate this Waifu's combat ability (1-10)", validators=[DataRequired()])
     intelligence = StringField("Rate this Waifu's intelligence (1-10)", validators=[DataRequired()])
     wouldyou = StringField('Would you?', validators=[DataRequired()])
-    body = TextAreaField('Tell us how you really feel about this Waifu.', validators=[Length(min=0, max=140)])
+    body = TextAreaField('Tell us how you really feel about this Waifu.', validators=[DataRequired()])
     submit = SubmitField('Submit')
