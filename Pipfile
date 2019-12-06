@@ -15,6 +15,7 @@ flask-login = "*"
 flask-mail = "*"
 pyjwt = "*"
 flask-bootstrap4 = "*"
+flask-moment = "*"
 
 [requires]
 python_version = "3.7"

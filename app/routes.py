@@ -5,8 +5,9 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, \
     ResetPasswordRequestForm, ResetPasswordForm, UploadWaifuForm, UploadAnimeForm, RateWaifuForm
-from app.models import User, Post, Waifu, PendingWaifu, Anime, PendingAnime, Rating
+from app.models import User, Post, Waifu, PendingWaifu, Anime, PendingAnime, Rating, AnimeGenres, WaifuTags, Studio
 from app.email import send_password_reset_email
+from sqlalchemy import or_
 
 
 @app.before_request
@@ -207,59 +208,81 @@ def browse_waifus():
     waifus = Waifu.query.all()
     return render_template('browse_waifus.html', waifus=waifus, Anime=Anime)
 
+@app.route('/waifuTags/<tag>')
+def browse_waifu_by_tag(tag):
+    waifus = db.engine.execute("Select * from waifu join waifu_tags on name=waifu_name where tag=:gv", {'gv':tag})
+    return render_template('browse_waifus_by_tag.html', waifus=waifus, Anime=Anime, tag=tag)
 
 @app.route('/waifus/<url>')
 def waifus(url):
     waifu = Waifu.query.filter_by(url=url).first_or_404()
+    tags = db.engine.execute("Select * from waifu_tags where waifu_name=(select name from waifu as w where w.url=:mv)", {'mv':url})
     ratings = Rating.query.filter_by(waifu_id=waifu.id)
-    return render_template('waifu.html', waifu=waifu, Waifu=Waifu, Anime=Anime, ratings=ratings)
-
+    return render_template('waifu.html', waifu=waifu, Waifu=Waifu, Anime=Anime, tags=tags, ratings=ratings)
 
 @app.route('/anime')
 def browse_anime():
     animes = Anime.query.all()
     return render_template('browse_anime.html', animes=animes)
 
+@app.route('/animeGenre/<genre>')
+def browse_anime_by_genre(genre):
+    animes = db.engine.execute("Select * from anime join anime_genres on name=anime_name where genre=:gv", {'gv':genre})
+    return render_template('browse_anime_by_genre.html', animes=animes, genre=genre)
+
+@app.route('/animeRelease/<date>')
+def browse_anime_by_release(date):
+    animes = db.engine.execute("Select * from anime where (season=:gv or year=:gv or studio=:gv)", {'gv':date})
+    return render_template('browse_anime_by_release.html', animes=animes, date=date)
 
 @app.route('/anime/<url>')
 def anime(url):
     anime = Anime.query.filter_by(url=url).first_or_404()
-    return render_template('anime.html', anime=anime)
-
+    waifus = db.engine.execute("Select * from waifu where anime_name=(select name from anime as a where a.url=:mv)", {'mv':url})
+    genres = db.engine.execute("Select * from anime_genres where anime_name=(select name from anime as a where a.url=:mv)", {'mv':url})
+    return render_template('anime.html', anime=anime, waifus=waifus, genres=genres)
 
 @app.route('/upload/<category>', methods=['GET', 'POST'])
 def upload(category):
     if current_user.is_anonymous:
         return redirect(url_for('login'))
-
     if category == 'waifu':
         form = UploadWaifuForm()
         if form.validate_on_submit():
             pending_waifu = PendingWaifu(name=form.name.data, description=form.description.data, \
                 image=form.image.data, url=form.url.data, anime_name=form.anime_name.data)
             db.session.add(pending_waifu)
+            tgs = form.tags.data.split(',')
+            for ts in tgs:
+                tags = WaifuTags(waifu_name=form.name.data, tag=ts)
+                db.session.add(tags)
             db.session.commit()
             flash('Congratulations, you make a Waifu! (Acceptance Pending)')
             return redirect(url_for('browse_waifus'))
     elif category == 'anime':
+        print('OMGGGG')
         form = UploadAnimeForm()
         if form.validate_on_submit():
             pending_anime = PendingAnime(name=form.name.data, season=form.season.data, year=form.year.data, \
                 num_episodes=form.num_episodes.data, esrb=form.esrb.data, description=form.description.data, \
                 image=form.image.data, url=form.url.data)
             db.session.add(pending_anime)
+            gens = form.genres.data
+            print('WTFFFFFFF')
+            for gs in gens:
+                genres = AnimeGenres(anime_name=form.name.data, genre=gs)
+                db.session.add(genres)
+            studio = Studio(name=form.studio.data)
+            db.session.add(studio)
             db.session.commit()
             flash('Congratulations, you make a Anime! (Acceptance Pending)')
             return redirect(url_for('browse_anime'))
-
     return render_template('upload.html', title=f'Upload {category.capitalize()}', form=form)
-
 
 @app.route('/rate/<url>', methods=['GET', 'POST'])
 def rate(url):
     if current_user.is_anonymous:
         return redirect(url_for('login'))
-
     waifu = Waifu.query.filter_by(url=url).first_or_404()
     form = RateWaifuForm()
     if form.validate_on_submit():
@@ -272,7 +295,6 @@ def rate(url):
         return redirect(url_for('waifus', url=url))
     return render_template('rate.html', form=form, waifu=waifu)
 
-
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
@@ -281,7 +303,6 @@ def admin():
         pending_animes = PendingAnime.query.all()
         return render_template('admin.html', pending_waifus=pending_waifus, pending_animes=pending_animes)
     return redirect(url_for('index'))
-
 
 @app.route('/admin/<status>/<category>/<url>', methods=['GET', 'POST'])
 @login_required
@@ -308,3 +329,10 @@ def admin_judgement(status, category, url):
         db.session.commit()
         return redirect(url_for('admin'))
     return redirect(url_for('index'))
+
+@app.route('/search', methods=['POST'])
+def searchDB():
+    searchTerm = request.form['searchTerm']
+    animes = Anime.query.filter(or_(Anime.name.contains(searchTerm),Anime.description.contains(searchTerm))).all()
+    waifus = Waifu.query.filter(or_(Waifu.name.contains(searchTerm),Waifu.description.contains(searchTerm))).all()
+    return render_template('browse_search.html', Anime=Anime, waifus=waifus, animes=animes, show_waifus=True, show_animes=True)

@@ -12,11 +12,19 @@
         <h2 class="display-4">{{ waifu.name }}</h2>
         <p class="lead">Appears in:
           {% if Anime.query.filter_by(name=waifu.anime_name).count() > 0 %}
-            <a href="/anime/{{ Anime.query.filter_by(name=waifu.anime_name).first_or_404().url }}">{{ waifu.anime_name }}</a>
+            <td><a href="/anime/{{ Anime.query.filter_by(name=waifu.anime_name).first_or_404().url }}">{{ waifu.anime_name }}</a></td>
           {% else %}
             <td>{{ waifu.anime_name }}</td>
           {% endif %}
         </p>
+
+        <div class="tags" style="vertical-align:sub">
+        Tags: 
+        {% for tag in tags %}
+          &emsp;<a href="/waifuTags/{{tag.tag}}">{{tag.tag}}</a>
+        {% endfor %}
+        </div>
+
         <hr class="my-4">
         <p>{{ waifu.description }}</p>
         <a class="btn btn-primary btn-lg" href="/rate/{{ waifu.url }}" role="button">Rate This Waifu</a>
