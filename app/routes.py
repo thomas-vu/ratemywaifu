@@ -93,16 +93,19 @@ def reset_password(token):
     return render_template('reset_password.html', form=form)
 
 @app.route('/user/<username>', methods=['GET', 'POST'])
-@login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     ratings = user.ratings.order_by(Rating.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('user', username=user.username, page=ratings.next_num) if ratings.has_next else None
     prev_url = url_for('user', username=user.username, page=ratings.prev_num) if ratings.has_prev else None
-    num_ratings = ceil(len(Rating.query.all()) / app.config['POSTS_PER_PAGE'])
-    return render_template('user.html', user=user, Waifu=Waifu,
-        ratings=ratings.items, num_ratings=num_ratings, prev_url=prev_url, page=page, next_url=next_url)
+    num_ratings = ceil(len(Rating.query.filter_by(user_id=user.id).all()) / app.config['POSTS_PER_PAGE'])
+    if current_user.is_anonymous:
+        return render_template('user_not_signed_in.html', user=user, Waifu=Waifu,
+            ratings=ratings.items, num_ratings=num_ratings, prev_url=prev_url, page=page, next_url=next_url)
+    else:
+        return render_template('user.html', user=user, Waifu=Waifu,
+            ratings=ratings.items, num_ratings=num_ratings, prev_url=prev_url, page=page, next_url=next_url)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
@@ -161,13 +164,18 @@ def browse_waifu_by_tag(tag):
     waifus = db.engine.execute("Select * from waifu join waifu_tags on name=waifu_name where tag=:gv", {'gv':tag})
     return render_template('browse_waifus_by_tag.html', waifus=waifus, Anime=Anime, tag=tag)
 
-@app.route('/waifus/<url>')
+@app.route('/waifus/<url>', methods=['GET', 'POST'])
 def waifus(url):
+    page = request.args.get('page', 1, type=int)
     waifu = Waifu.query.filter_by(url=url).first_or_404()
     tags = db.engine.execute("Select * from waifu_tags where waifu_name=(select name from waifu as w where w.url=:mv)", {'mv':url})
-    ratings = Rating.query.filter_by(waifu_id=waifu.id)
+    ratings = Rating.query.filter_by(waifu_id=waifu.id).order_by(Rating.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('index', page=ratings.next_num) if ratings.has_next else None
+    prev_url = url_for('index', page=ratings.prev_num) if ratings.has_prev else None
+    num_ratings = ceil(len(Rating.query.filter_by(waifu_id=waifu.id).all()) / app.config['POSTS_PER_PAGE'])
     avgratings = WaifuAverages.query.filter_by(waifu_id=waifu.id).first_or_404()
-    return render_template('waifu.html', waifu=waifu, Waifu=Waifu, Anime=Anime, tags=tags, ratings=ratings, avgratings=avgratings)
+    return render_template('waifu.html', waifu=waifu, Waifu=Waifu, Anime=Anime, tags=tags, \
+        ratings=ratings.items, num_ratings=num_ratings, avgratings=avgratings, prev_url=prev_url, page=page, next_url=next_url)
 
 @app.route('/anime')
 def browse_anime():

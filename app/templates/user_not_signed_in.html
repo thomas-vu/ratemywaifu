@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+    <table class="table table-hover">
+        <tr>
+            <td width="256px"><img src="{{ user.avatar(256) }}"></td>
+            <td>
+                <h1>{{ user.username }}</h1>
+                {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+                {% if user.last_seen %}<p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>{% endif %}
+                <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+            </td>
+        </tr>
+    </table>
+
+    {% for rating in ratings %}
+        {% include '_rating.html' %}
+    {% endfor %}
+
+    <nav aria-label="...">
+      <ul class="pagination justify-content-center">
+        {% for i in range(1, num_ratings+1) %}
+          {% if i == page %}
+            <li class="page-item active">
+              <span class="page-link">
+                {{ page }}
+                <span class="sr-only">(current)</span>
+              </span>
+            </li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('user', username=user.username, page=i) }}">{{ i }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </nav>
+
+{% endblock %}
