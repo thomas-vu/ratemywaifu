@@ -5,7 +5,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, \
     ResetPasswordRequestForm, ResetPasswordForm, UploadWaifuForm, UploadAnimeForm, RateWaifuForm
-from app.models import User, Post, Waifu, PendingWaifu, Anime, PendingAnime, Rating, AnimeGenres, WaifuTags, Studio
+from app.models import User, Post, Waifu, PendingWaifu, Anime, PendingAnime, Rating, AnimeGenres, WaifuTags, Studio, WaifuAverages
 from app.email import send_password_reset_email
 from sqlalchemy import or_
 from math import ceil
@@ -166,7 +166,8 @@ def waifus(url):
     waifu = Waifu.query.filter_by(url=url).first_or_404()
     tags = db.engine.execute("Select * from waifu_tags where waifu_name=(select name from waifu as w where w.url=:mv)", {'mv':url})
     ratings = Rating.query.filter_by(waifu_id=waifu.id)
-    return render_template('waifu.html', waifu=waifu, Waifu=Waifu, Anime=Anime, tags=tags, ratings=ratings)
+    avgratings = WaifuAverages.query.filter_by(waifu_id=waifu.id).first_or_404()
+    return render_template('waifu.html', waifu=waifu, Waifu=Waifu, Anime=Anime, tags=tags, ratings=ratings, avgratings=avgratings)
 
 @app.route('/anime')
 def browse_anime():

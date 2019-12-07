@@ -67,6 +67,7 @@ class PostForm(FlaskForm):
 
 #-------------------------------------------------------------------------------
 
+one_to_ten = [('1','1'),('2','2'),('3','3'),('4','4'),('5','5'),('6','6'),('7','7'),('8','8'),('9','9'),('10','10')]
 seasons = [('Winter','Winter'),('Spring','Spring'),('Summer','Summer'),('Fall','Fall')]
 years = [('2019','2019'),('2018','2018'),('2017','2017'),('2016','2016'),('2015','2015'),('2014','2014'),('2013','2013'),('2012','2012'),('2011','2011'),('2010','2010'),\
         ('2009','2009'),('2008','2008'),('2007','2007'),('2006','2006'),('2005','2005'),('2004','2004'),('2003','2003'),('2002','2002'),('2001','2001'),('2000','2000'),\
@@ -110,10 +111,10 @@ class UploadAnimeForm(FlaskForm):
     submit = SubmitField('Upload')
 
 class RateWaifuForm(FlaskForm):
-    appearance = StringField("Rate this Waifu's appearance (1-10)", validators=[DataRequired()])
-    personality = StringField("Rate this Waifu's personality (1-10)", validators=[DataRequired()])
-    strength = StringField("Rate this Waifu's combat ability (1-10)", validators=[DataRequired()])
-    intelligence = StringField("Rate this Waifu's intelligence (1-10)", validators=[DataRequired()])
+    appearance = SelectField("Rate this Waifu's appearance (1-10)", choices=one_to_ten)
+    personality = SelectField("Rate this Waifu's personality (1-10)", choices=one_to_ten)
+    strength = SelectField("Rate this Waifu's combat ability (1-10)", choices=one_to_ten)
+    intelligence = SelectField("Rate this Waifu's intelligence (1-10)", choices=one_to_ten)
     wouldyou = StringField('Would you?', validators=[DataRequired()])
     body = TextAreaField('Tell us how you really feel about this Waifu.', validators=[DataRequired()])
     submit = SubmitField('Submit')

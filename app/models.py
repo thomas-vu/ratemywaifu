@@ -170,3 +170,14 @@ class WaifuTags(db.Model):
     tag = db.Column(db.String(140))
     def __repr__(self):
         return '<WaifuTags {}>'.format(self.name)
+
+class WaifuAverages(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    waifu_id = db.Column(db.Integer, db.ForeignKey('waifu.id'))
+    appearance_total = db.Column(db.String(140))
+    personality_total = db.Column(db.String(140))
+    strength_total = db.Column(db.String(140))
+    intelligence_total = db.Column(db.String(140))
+    num_ratings = db.Column(db.String(140))
+    def __repr__(self):
+        return '<WaifuAverages {}>'.format(self.name)
