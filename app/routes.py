@@ -237,6 +237,14 @@ def rate(url):
             strength=form.strength.data, intelligence=form.intelligence.data, wouldyou=form.wouldyou.data, \
             body=form.body.data, author=current_user, rated=waifu)
         db.session.add(rating)
+
+        averages = WaifuAverages.query.filter_by(id=waifu.id).first_or_404()
+        averages.appearance_total = str(int(averages.appearance_total) + int(form.appearance.data))
+        averages.personality_total = str(int(averages.personality_total) + int(form.personality.data))
+        averages.strength_total = str(int(averages.strength_total) + int(form.strength.data))
+        averages.intelligence_total = str(int(averages.intelligence_total) + int(form.intelligence.data))
+        averages.num_ratings = str(int(averages.num_ratings) + 1)
+
         db.session.commit()
         flash('Congratulations, you rate a Waifu!')
         return redirect(url_for('waifus', url=url))
@@ -267,13 +275,22 @@ def admin_judgement(status, category, url):
                     image=pending.image, url=pending.url)
             db.session.add(accepted)
             db.session.delete(pending)
+            db.session.commit()
+            averages = WaifuAverages(waifu_id = Waifu.query.filter_by(id=accepted.id).first_or_404().id,
+                                     appearance_total='0',
+                                     personality_total='0',
+                                     strength_total='0',
+                                     intelligence_total='0',
+                                     num_ratings='0')
+            db.session.add(averages)
+            db.session.commit()
         elif status == 'reject':
             if category == 'waifu':
                 rejected = PendingWaifu.query.filter_by(url=url).first_or_404()
             elif category == 'anime':
                 rejected = PendingAnime.query.filter_by(url=url).first_or_404()
             db.session.delete(rejected)
-        db.session.commit()
+            db.session.commit()
         return redirect(url_for('admin'))
     return redirect(url_for('index'))
 

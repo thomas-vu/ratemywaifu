@@ -7,7 +7,7 @@ user = User(username='CatGirlLover69', email='catgirllover69@gmail.com')
 user.set_password('cat')
 db.session.add(user)
 
-for _ in range(500):
+for _ in range(100):
     random_id = randint(1, 37)
     waifu = Waifu.query.filter_by(id=random_id).first_or_404()
 
