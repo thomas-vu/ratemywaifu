@@ -21,38 +21,32 @@
   {% endfor %}
 
   <nav aria-label="...">
-      <ul class="pagination justify-content-center">
-          <li class="previous{% if not prev_url %} disabled {% endif %}">
-              <a href="{{ prev_url or '#' }}">
-                  <span aria-hidden="true">&larr;</span> Newer ratings
-              </a>
+    <ul class="pagination justify-content-center">
+      {% for i in range(1, num_ratings+1) %}
+        {% if i == page %}
+          <li class="page-item active">
+            <span class="page-link">
+              {{ page }}
+              <span class="sr-only">(current)</span>
+            </span>
           </li>
-          <p>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </p>
-          <li class="next{% if not next_url %} disabled {% endif %}">
-              <a href="{{ next_url or '#' }}">
-                  Older ratings<span aria-hidden="true">&rarr;</span>
-              </a>
-          </li>
-      </ul>
+        {% else %}
+          <li class="page-item"><a class="page-link" href="{{ url_for('index', page=i) }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
   </nav>
+
+<!-- Previous and Next buttons for pagination.
+
+      <li class="page-item disabled">
+        <span class="page-link">Previous</span>
+      </li>
+
+      <li class="page-item">
+        <a class="page-link" href="#">Next</a>
+      </li>
+
+-->
+
 {% endblock %}

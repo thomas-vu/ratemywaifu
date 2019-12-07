@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Search Results!</h1></br>
+
+	<h2>From Waifus</h2>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Anime</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for waifu in waifus %}
+          <tr>
+            <td><a href="/waifus/{{ waifu.url }}">{{ waifu.name }}</a></td>
+            {% if Anime.query.filter_by(name=waifu.anime_name).count() > 0 %}
+              <td><a href="/anime/{{ Anime.query.filter_by(name=waifu.anime_name).first_or_404().url }}">{{ waifu.anime_name }}</a></td>
+            {% else %}
+              <td>{{ waifu.anime_name }}</td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+	<h2>From Anime</h2>
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Season</th>
+            <th scope="col">Year</th>
+            <th scope="col">Number of Episodes</th>
+            <th scope="col">Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for anime in animes %}
+              <tr>
+                <td><a href="/anime/{{ anime.url }}">{{ anime.name }}</a></td>
+                <td>{{ anime.season }}</td>
+                <td>{{ anime.year }}</td>
+                <td>{{ anime.num_episodes }}</td>
+                <td>{{ anime.esrb }}</td>
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+{% endblock %}
