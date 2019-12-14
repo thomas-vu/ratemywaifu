@@ -94,6 +94,7 @@ class Waifu(db.Model):
     image = db.Column(db.String(140))
     url = db.Column(db.String(140))
     rating = db.relationship('Rating', backref='rated', lazy='dynamic')
+    averages = db.relationship('WaifuAverages', backref='averaged', lazy='dynamic')
     anime_name = db.Column(db.String(140))
     anime_id = db.Column(db.Integer, db.ForeignKey('anime.id'))
     def __repr__(self):
