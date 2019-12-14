@@ -1,4 +1,4 @@
-# ratemywaifu
+# RateMyWaifu
 
 www.ratemywaifu.moe
 
