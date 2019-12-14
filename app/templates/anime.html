@@ -36,7 +36,6 @@
       {% for waifu in waifus %}
         <tr>
           <td><a href="/waifus/{{ waifu.url }}">{{ waifu.name }}</a></td>
-          <td><a href="/anime/{{ anime.query.filter_by(name=waifu.anime_name).first_or_404().url }}">{{ waifu.anime_name }}</a></td>
         </tr>
       {% endfor %}
     </tbody>

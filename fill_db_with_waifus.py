@@ -9,6 +9,7 @@ for i, character in enumerate(A):
                   description = character[5],
                   image       = character[2],
                   url         = character[0],
+                  anime_name  = Anime.query.filter_by(name=character[3]).first_or_404().name,
                   anime_id    = Anime.query.filter_by(name=character[3]).first_or_404().id)
     #print(waifu)
     db.session.add(waifu)
