@@ -1,6 +1,6 @@
 # ratemywaifu
 
-Visit ratemywaifu.moe to try it!
+www.ratemywaifu.moe
 
 To run locally:
 
