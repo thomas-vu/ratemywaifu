@@ -161,14 +161,14 @@ def browse_waifus():
 
 @app.route('/waifuTags/<tag>')
 def browse_waifu_by_tag(tag):
-    waifus = db.engine.execute("Select * from waifu join waifu_tags on name=waifu_name where tag=:gv", {'gv':tag})
+    waifus = db.session.execute("Select * from waifu join waifu_tags on name=waifu_name where tag=:gv", {'gv':tag})
     return render_template('browse_waifus_by_tag.html', waifus=waifus, Anime=Anime, tag=tag)
 
 @app.route('/waifus/<url>', methods=['GET', 'POST'])
 def waifus(url):
     page = request.args.get('page', 1, type=int)
     waifu = Waifu.query.filter_by(url=url).first_or_404()
-    tags = db.engine.execute("Select * from waifu_tags where waifu_name=(select name from waifu as w where w.url=:mv)", {'mv':url})
+    tags = WaifuTags.query.filter_by(waifu_name=waifu.name).all()
     ratings = Rating.query.filter_by(waifu_id=waifu.id).order_by(Rating.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('index', page=ratings.next_num) if ratings.has_next else None
     prev_url = url_for('index', page=ratings.prev_num) if ratings.has_prev else None
@@ -184,19 +184,19 @@ def browse_anime():
 
 @app.route('/animeGenre/<genre>')
 def browse_anime_by_genre(genre):
-    animes = db.engine.execute("Select * from anime join anime_genres on name=anime_name where genre=:gv", {'gv':genre})
+    animes = db.session.execute("Select * from anime join anime_genres on name=anime_name where genre=:gv", {'gv':genre})
     return render_template('browse_anime_by_genre.html', animes=animes, genre=genre)
 
 @app.route('/animeRelease/<date>')
 def browse_anime_by_release(date):
-    animes = db.engine.execute("Select * from anime where (season=:gv or year=:gv or studio=:gv)", {'gv':date})
+    animes = db.session.execute("Select * from anime where (season=:gv or year=:gv or studio=:gv)", {'gv':date})
     return render_template('browse_anime_by_release.html', animes=animes, date=date)
 
 @app.route('/anime/<url>')
 def anime(url):
     anime = Anime.query.filter_by(url=url).first_or_404()
-    waifus = db.engine.execute("Select * from waifu where anime_name=(select name from anime as a where a.url=:mv)", {'mv':url})
-    genres = db.engine.execute("Select * from anime_genres where anime_name=(select name from anime as a where a.url=:mv)", {'mv':url})
+    waifus = db.session.execute("Select * from waifu where anime_name=(select name from anime as a where a.url=:mv)", {'mv':url})
+    genres = db.session.execute("Select * from anime_genres where anime_name=(select name from anime as a where a.url=:mv)", {'mv':url})
     return render_template('anime.html', anime=anime, waifus=waifus, genres=genres)
 
 @app.route('/upload/<category>', methods=['GET', 'POST'])
