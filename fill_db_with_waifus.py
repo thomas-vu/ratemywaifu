@@ -1,6 +1,6 @@
 from sys import stdin
 from app import db
-from app.models import Waifu, WaifuTags, WaifuAverages
+from app.models import Waifu, WaifuTags, WaifuAverages, Anime
 
 A = [line.split('$') for line in stdin]
 
@@ -9,7 +9,7 @@ for i, character in enumerate(A):
                   description = character[5],
                   image       = character[2],
                   url         = character[0],
-                  anime_name  = character[3])
+                  anime_id    = Anime.query.filter_by(name=character[3]).first_or_404().id)
     #print(waifu)
     db.session.add(waifu)
     B = character[4].split(',')

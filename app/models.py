@@ -94,7 +94,7 @@ class Waifu(db.Model):
     image = db.Column(db.String(140))
     url = db.Column(db.String(140))
     rating = db.relationship('Rating', backref='rated', lazy='dynamic')
-    anime_name = db.Column(db.String(140), db.ForeignKey('anime.name'))
+    anime_id = db.Column(db.Integer, db.ForeignKey('anime.id'))
     def __repr__(self):
         return '<Waifu {}>'.format(self.name)
 
