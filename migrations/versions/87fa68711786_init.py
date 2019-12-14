@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 6a32b349a02a
+Revision ID: 87fa68711786
 Revises: 
-Create Date: 2019-12-13 19:42:33.348255
+Create Date: 2019-12-13 20:01:16.717790
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6a32b349a02a'
+revision = '87fa68711786'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,7 +25,7 @@ def upgrade():
     sa.Column('year', sa.String(length=140), nullable=True),
     sa.Column('num_episodes', sa.String(length=140), nullable=True),
     sa.Column('esrb', sa.String(length=140), nullable=True),
-    sa.Column('description', sa.String(length=140), nullable=True),
+    sa.Column('description', sa.String(length=5000), nullable=True),
     sa.Column('image', sa.String(length=140), nullable=True),
     sa.Column('url', sa.String(length=140), nullable=True),
     sa.Column('studio', sa.String(length=140), nullable=True),
@@ -44,7 +44,7 @@ def upgrade():
     sa.Column('year', sa.String(length=140), nullable=True),
     sa.Column('num_episodes', sa.String(length=140), nullable=True),
     sa.Column('esrb', sa.String(length=140), nullable=True),
-    sa.Column('description', sa.String(length=140), nullable=True),
+    sa.Column('description', sa.String(length=5000), nullable=True),
     sa.Column('image', sa.String(length=140), nullable=True),
     sa.Column('url', sa.String(length=140), nullable=True),
     sa.Column('studio', sa.String(length=140), nullable=True),
@@ -53,7 +53,7 @@ def upgrade():
     op.create_table('pending_waifu',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=140), nullable=True),
-    sa.Column('description', sa.String(length=140), nullable=True),
+    sa.Column('description', sa.String(length=5000), nullable=True),
     sa.Column('image', sa.String(length=140), nullable=True),
     sa.Column('url', sa.String(length=140), nullable=True),
     sa.Column('anime_name', sa.String(length=140), nullable=True),
@@ -100,7 +100,7 @@ def upgrade():
     op.create_table('waifu',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=140), nullable=True),
-    sa.Column('description', sa.String(length=140), nullable=True),
+    sa.Column('description', sa.String(length=5000), nullable=True),
     sa.Column('image', sa.String(length=140), nullable=True),
     sa.Column('url', sa.String(length=140), nullable=True),
     sa.Column('anime_id', sa.Integer(), nullable=True),
@@ -114,7 +114,7 @@ def upgrade():
     sa.Column('strength', sa.String(length=140), nullable=True),
     sa.Column('intelligence', sa.String(length=140), nullable=True),
     sa.Column('wouldyou', sa.String(length=140), nullable=True),
-    sa.Column('body', sa.String(length=140), nullable=True),
+    sa.Column('body', sa.String(length=5000), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('waifu_id', sa.Integer(), nullable=True),
